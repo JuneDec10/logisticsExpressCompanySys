@@ -1,0 +1,29 @@
+
+# 应用服务 WEB 访问端口
+server:
+  port: 8081
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/logistics_system?serverTimezone=GMT%2b8&characterEncoding=utf8&useAffectedRows=true
+    username: root
+    password: 123456
+
+alipay:
+  appId: 2021000121669298
+  appPrivateKey: MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCqDD1fKB9teN/BfqgE5MGiZupXQeRrFi6xwqo5sfooK5Inurb+L6yXA67VLSU1udaVYzdDhBLab7eSYQgfv/dAM3p15ZZQkbz/Hn7yRdjjw1XR8k6tVHckoz8nW0zIXaL4KIIEaV9FaukeD4VJWByaU3wAfVEpG8AjtrUHFVXpggvTmst1CpSPEpHIIBkyf+DMrqknNNBVpRwUYl5tOF5vweasZr18ytfODFq/gPoawxyH1j6B/6cnuSwLEwTiIcHtqsXvBo6KFx2/e5a+KjSTY1o8xR0Rr3gi1aqljmf9Gfm7T2RlQ2V6+uaCxKSi8CuED404WPI2iViTOhFt1Q+lAgMBAAECggEBAIik00A+5po6cltzYqKkC/Frj83UVi+zIIyZZ9565REYihbA1EGHn8GuJPSKlYcJsaRTmNn5LIk5EqNes3+H67A8baCFf/d4VQ4QvGQEupezpKfTdWOVJzRatenzVM0BaW7OZkQTRIpssa0FPc7FLh7ZDSD7kpddBFXugKOTgnjjRoKJkl2T29gOFUgMofXFZXPSy15L7Ff+EHiC/k6onpj9EbJzLHuwm9jKpsTIm7L+cM/apz+EgCv6yEFtI6Xw+xg8MmTvoxve8FpTauegBv6USyhET/PpNoaOvDoxEWRz/FHW6E8LrVakdMAhm4KimcmYEC9E2JDt6VaCMsLxR0ECgYEA3raCDq+msaFqw2jCv1y/gABN4OF1pZGNz2TZp1mKlNXjRbuQ7legPzD6E24FhbjWqwBqvtsf3d+eccsk0VK9fDpBchBmS+lCcCjpVZRWdhiBUODwy9Aa+g58aiFT40jV6oNfWxko8xUbjF+JWzWKqGwwQ4wUwqrbF5PK5biCPHUCgYEAw3aluqkd8CQnU2BaFFB/UOvCljAoPc6r8KDWMTQ0bw4nUXWT7BMBP/lvSIMSxfzZ2ciUpvZ01/b2kwx/hgh6hDfmNMcD+IwpQVcHNOJQ2yIbsgCGpA8cf8C4zsMncMpjClMAzTCl3H1ms92jbEo518DQx0qy+JAWXhqf6CNq4HECgYB0cgSKXTjRA07pIOtCVuIhsQcHH5r9mJ8G4voST/TvYO3V1f4vQE2e/KKkahAlHMHQ4wTtCXEd9v/HC6oScCp2u5bgZsa1xh5gumNVxZt3X9StTw9X4VVZjR1r+ET+P2TpmwrOfNc2UcD3ojQVJmd7LCYIC0QHjIHFUBb0CYa+yQKBgQCimK8ygH4kBp8kD3G/llrigMxEzVicWbDUIacsFSZM/7QbYjij2AdhJWi6JDbYtgau0Nk/rqLyCEGDf5EReToZhLqeSrN17XpgHTokduMV9uCdCSz3io6Fg1b4wIStod4Td4qiJgbDTRnDI+tPKMvHO2Exd2U7ufixXWqJ2/SLMQKBgCWA9GImc27gPIBVa4Zf8fQlUHvH5z0S2rHnqw5F7qTxU9b5cWmHkDPteW1ZorCGR9GqcRmlwCj5JmDvQmCbVkDII2foPkCtqtR3p5w+L/O14afWVlHbwSN/+JIVzneQ6umpsTAg659cnzaOs3galCCcl8sT3ERpETfoNME/GMGg
+  alipayPublicKey: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAk+Df1kRBxGxfH7cEeQevpTJlB/0+SU7IBqC89Ht7oa0SXU3tC5gG2UsqRKu3ehfoWuSFgZKUVC06y6hSdMVQTVxE5Sons4wjnyOBytYYnNiNxmg3iPYmRP1OqHAqDCcrBokE94ES/EHm+xfb5N1n67GK+gUTfommiu6ayVA4juhNU9o2n0RSB8TdUh1MvYHeI2g+xI+YzZ01THXl9cIXDMF/903AGhebWhT0ier437la7H3QjW5wg+2XS2pwI6gtKUZ+Y0gBpI2oKBeqmfv/sp5aA4ZZ/1wLD9qSemojo2V6SjqUOPPj1nhArnooxXjeZ/xbz5x6rJ79tTSG3ELw4wIDAQAB
+  notifyUrl: http://beiq4y.natappfree.cc/alipay/notify
+  returnUrl: http://localhost:8080/userParcelManage
+
+mybatis-plus:
+  global-config:
+    db-config:
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+      id-type: auto
+  mapper-locations: classpath:/mapper/**.xml
+  configuration:
+    map-underscore-to-camel-case: true
+

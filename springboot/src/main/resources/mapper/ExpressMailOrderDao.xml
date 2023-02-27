@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.springboot.Dao.fore.ExpressMailOrderDao">
+
+    <insert id="addOne" useGeneratedKeys="true" keyProperty="id">
+          insert into express_mail_order (id,create_time,update_time,item_type,item_weight,payment_method,
+                                        recipients_address,recipients_full_address,recipients_mobile,recipients_name,
+                                          remark,send_address,send_full_address,sender_mobile,sender_name,waybill_number,fore_user_id,order_status,abolished,price)
+                                          values (
+                                                  #{id},now(),now(),#{itemType},#{itemWeight},#{paymentMethod},#{recipientsAddress},
+                                                  #{recipientsFullAddress},#{recipientsMobile},#{recipientsName},#{remark},
+                                                  #{sendAddress},#{sendFullAddress},#{senderMobile},#{senderName},#{waybillNumber},#{foreUserId},#{orderStatus},#{abolished},#{price}
+                                                 )
+    </insert>
+    <update id="updateOrderStatus" useGeneratedKeys="true" keyProperty="id">
+        update express_mail_order set order_status = #{orderStatus}
+             where id = #{id}
+
+    </update>
+    <update id="updateAbolished">
+        update express_mail_order set abolished = #{abolished}
+        where id = #{id}
+    </update>
+    <select id="listAll"  resultType="com.example.springboot.entity.fore.ExpressMailOrder">
+        select * from express_mail_order
+    </select>
+    <select id="listByStatus" resultType="com.example.springboot.entity.fore.ExpressMailOrder">
+        select express_mail_order.* from express_mail_order inner join user
+            on express_mail_order.send_address = user.address
+        where
+              user.id = #{branch_id} and
+            express_mail_order.order_status = #{expressMailOrderStatus}
+    </select>
+    <select id="findById" resultType="com.example.springboot.entity.fore.ExpressMailOrder">
+        select * from express_mail_order where id = #{id}
+    </select>
+    <select id="listByIdOrMobile" resultType="com.example.springboot.entity.fore.ExpressMailOrder">
+        select * from express_mail_order
+        where 1=1
+            <if test="express.recipientsMobile!=null">
+                and recipients_mobile = #{express.recipientsMobile}
+            </if>
+            <if  test="express.foreUserId!=null">
+                and fore_user_id = #{express.foreUserId}
+            </if >
+            <if test='setIdOrStatus== 2 and express.orderStatus != null'>
+                and order_status = #{express.orderStatus}
+            </if>
+            <if test='setIdOrStatus== 1 and express.orderStatus == null'>
+                and order_status != 0 and order_status != 7
+            </if>
+
+    </select>
+    <select id="findByWaybillNumber" resultType="com.example.springboot.entity.fore.ExpressMailOrder">
+        select * from express_mail_order where waybill_number = #{waybillNumber}
+    </select>
+</mapper>

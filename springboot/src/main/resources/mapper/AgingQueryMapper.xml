@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.springboot.Dao.fore.AgingQueryDao">
+    <insert id="addOne">
+        insert into aging_query(id,create_time,update_time,origin,destination,eta,price_per_kilogram,origin_price) values
+            (#{id},now(),now(),#{origin},#{destination},#{eta},#{pricePerKilogram},#{originPrice})
+    </insert>
+    <update id="updateAll">
+update aging_query
+        <trim prefix="set" suffixOverrides=",">
+            update_time = now(),
+            <if test="origin!=null">
+                origin = #{origin},
+            </if>
+            <if test="destination!=null">
+                destination = #{destination}
+            </if>
+            <if test="eta!=null">
+                eta = #{eta},
+            </if>
+            <if test="pricePerKilogram!=null">
+                price_per_kilogram = #{pricePerKilogram},
+            </if>
+            <if test="originPrice!=null">
+                origin_price = #{originPrice},
+            </if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <select id="agingQueryList" resultType="com.example.springboot.entity.fore.AgingQuery">
+        select * from aging_query where origin = #{sendAddress} and destination = #{recipientsAddress}
+    </select>
+    <select id="getAgingQuery" resultType="com.example.springboot.entity.fore.AgingQuery">
+        select * from aging_query where origin = #{sendAddress} and destination = #{recipientsAddress}
+    </select>
+    <select id="listAll" resultType="com.example.springboot.entity.fore.AgingQuery">
+        select * from aging_query
+    </select>
+    <select id="listById" resultType="com.example.springboot.entity.fore.AgingQuery">
+        select * from aging_query where id = #{id}
+    </select>
+</mapper>

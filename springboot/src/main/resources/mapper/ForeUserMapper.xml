@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.springboot.Dao.fore.ForeUserDao">
+    <update id="updateStatusOrDeleted">
+        update fore_user
+        <trim prefix="set" suffixOverrides=",">
+            update_time = now(),
+            <if test="status!=null">
+                status = #{status},
+            </if>
+            <if test="deleted!=null">
+                deleted = #{deleted}
+            </if>
+        </trim>
+        where id = #{id}
+    </update>
+    <select id="findByName" resultType="com.example.springboot.entity.fore.ForeUser">
+        select * from fore_user where name = #{name}
+    </select>
+    <select id="findByMobile" resultType="com.example.springboot.entity.fore.ForeUser">
+        select * from fore_user where mobile = #{mobile}
+    </select>
+    <select id="findById" resultType="com.example.springboot.entity.fore.ForeUser">
+        select * from fore_user where id = #{id}
+    </select>
+
+</mapper>

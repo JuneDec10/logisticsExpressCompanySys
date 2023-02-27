@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "@vue/composition-api": "^1.7.0",
+    "@vueuse/integrations": "^9.2.0",
+    "mitt": "^3.0.0",
+    "universal-cookie": "^4.0.4",
+    "vue-cookies": "^1.8.1"
+  }
+}

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.springboot.Dao.back.ProcessRecordsDao">
+
+    <resultMap id="processRecordsMap" type="com.example.springboot.entity.back.ProcessRecords" autoMapping="true">
+        <result property="createTime" column="create_time"></result>
+        <result property="updateTime" column="update_time"></result>
+        <association property="receivedBranchId" javaType="com.example.springboot.entity.back.User">
+            <result property="id" column="rid"></result>
+            <result property="roleId" column="rrole_id"></result>
+            <result property="username" column="rusername"></result>
+            <result property="createTime" column="create_time"></result>
+            <result property="updateTime" column="update_time"></result>
+            <result property="address" column="raddress"></result>
+            <result property="mobile" column="rmobile"></result>
+        </association>
+        <association property="nextBranchId" javaType="com.example.springboot.entity.back.User">
+            <result property="id" column="nid"></result>
+            <result property="roleId" column="nrole_id"></result>
+            <result property="username" column="nusername"></result>
+            <result property="createTime" column="create_time"></result>
+            <result property="updateTime" column="update_time"></result>
+            <result property="address" column="naddress"></result>
+            <result property="mobile" column="nmobile"></result>
+        </association>
+        <association property="expressMailOrderId" javaType="com.example.springboot.entity.fore.ExpressMailOrder">
+            <result property="id" column="eid"></result>
+            <result property="createTime" column="create_time"></result>
+            <result property="orderStatus" column="order_status"></result>
+            <result property="itemType" column="item_type"></result>
+            <result property="itemWeight" column="item_weight"></result>
+            <result property="paymentMethod" column="payment_method"></result>
+            <result property="price" column="price"></result>
+            <result property="recipientsAddress" column="recipients_address"></result>
+            <result property="recipientsFullAddress" column="recipients_full_address"></result>
+            <result property="recipientsMobile" column="recipients_mobile"></result>
+            <result property="recipientsName" column="recipients_name"></result>
+            <result property="remark" column="remark"></result>
+            <result property="sendAddress" column="send_address"></result>
+            <result property="sendFullAddress" column="send_full_address"></result>
+            <result property="senderMobile" column="sender_mobile"></result>
+            <result property="senderName" column="sender_name"></result>
+            <result property="waybillNumber" column="waybill_number"></result>
+            <result property="foreUserId" column="fore_user_id"></result>
+            <result property="abolished" column="eabolished"></result>
+        </association>
+    </resultMap>
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+
+insert into process_records(create_time,update_time,operation,travel_position,
+                            express_mail_order_id,next_branch_id,received_branch_id
+                            ) values (
+                                      now(),now(),#{operation},#{travelPosition},#{
+                                      expressMailOrderId.id},#{nextBranchId.id},#{receivedBranchId.id}
+                                     )
+
+    </insert>
+    <update id="update" useGeneratedKeys="true" keyProperty="id">
+        update process_records
+
+        <trim prefix="set" suffixOverrides=",">
+            update_time = now(),
+            <if test="operation != null">
+               operation = #{operation},
+            </if>
+            <if test="travelPosition != null">
+                travel_position = #{travelPosition},
+            </if>
+            <if test="expressMailOrderId != null">
+                express_mail_order_id = #{expressMailOrderId.id},
+            </if>
+            <if test="nextBranchId != null">
+                next_branch_id = #{nextBranchId.id},
+            </if>
+            <if test="receivedBranchId != null">
+                received_branch_id = #{receivedBranchId.id},
+            </if>
+
+        </trim>
+
+            where id = #{id}
+
+    </update>
+    <select id="listAll" resultMap="processRecordsMap">
+select pr.*,emo.*,emo.id as eid,emo.abolished as eabolished from express_mail_order as emo,process_records as pr
+where pr.next_branch_id = #{id} and pr.operation =#{status} and pr.travel_position = #{orderStatus}
+                    and emo.id = pr.express_mail_order_id
+    </select>
+    <select id="find" resultMap="processRecordsMap">
+        select *,pr.express_mail_order_id as eid,pr.next_branch_id as nid,pr.received_branch_id as rid from process_records as pr
+        where 1 = 1
+        <if test="id != null">
+        and id = #{id}
+        </if>
+        <if test="operation != null">
+            and operation = #{operation}
+        </if>
+        <if test="travelPosition != null">
+            and travel_position = #{travelPosition}
+        </if>
+          <if test="expressMailOrderId != null">
+              <if test="expressMailOrderId.id != null">
+                  and express_mail_order_id = #{expressMailOrderId.id}
+              </if>
+          </if>
+        <if test="nextBranchId != null"></if>
+        <if test="nextBranchId.id != null">
+            and next_branch_id = #{nextBranchId.id}
+        </if>
+          <if test="receivedBranchId != null">
+              <if test="receivedBranchId.id != null">
+                  and received_branch_id = #{receivedBranchId.id}
+              </if>
+          </if>
+
+    </select>
+    <select id="listAllById" resultMap="processRecordsMap">
+        select pr.*,nbi.*,rbi.*,
+               nbi.id as nid,rbi.id as rid,
+               nbi.username as nusername,rbi.username as rusername,
+               nbi.address as naddress,rbi.address as raddress,
+               nbi.role_id as nrole_id,rbi.role_id as rrole_id,
+               nbi.mobile as nmobile,rbi.mobile as rmobile
+        from process_records as pr
+           left join user as rbi on pr.received_branch_id = rbi.id
+           left join user as nbi on pr.next_branch_id = nbi.id
+        where pr.express_mail_order_id = #{id}
+    </select>
+</mapper>

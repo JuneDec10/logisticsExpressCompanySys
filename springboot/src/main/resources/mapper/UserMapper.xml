@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.springboot.Dao.back.UserDao">
+    <insert id="addOne">
+        insert into user(username,mobile,password,status,address,role_id,create_time,update_time)
+        values (
+                #{username},#{mobile},#{password},#{status},#{address},#{roleId},now(),now()
+               )
+    </insert>
+
+    <update id="updateOne">
+        update user set
+                        username = #{username},
+                        mobile = #{mobile},
+                        address = #{address},
+                        status = #{status},
+                        role_id = #{roleId}
+        where id = #{id}
+    </update>
+    <update id="logicDeleteOne">
+        update user set
+                        deleted = #{deleted}
+        where id = #{id}
+    </update>
+    <update id="updateCourier">
+        update user set
+                        username = #{username},
+                        mobile = #{mobile},
+                        status = #{status}
+        where id = #{id}
+
+    </update>
+
+
+    <select id="findByName" resultType="com.example.springboot.entity.back.User">
+        select * from user where username = #{username}
+    </select>
+    <select id="findById" resultType="com.example.springboot.entity.back.User">
+        select * from user where id = #{id}
+    </select>
+    <select id="findAllByUserType" resultType="com.example.springboot.entity.back.User">
+        select * from user where role_id = #{user_type} and deleted != 1
+    </select>
+    <select id="findAllNextTransPoint" resultType="com.example.springboot.entity.back.User">
+        select * from user
+where address like concat(#{address},'%') and role_id = #{roleId}
+    </select>
+    <select id="findBranchCourier" resultType="com.example.springboot.entity.back.User">
+        select *
+        from user as u
+        where exists (select 1
+                      from branch_courier as bc
+                      where bc.branch_id = #{id} and u.id = bc.courier_id)
+    </select>
+    <select id="findByMobile" resultType="com.example.springboot.entity.back.User">
+        select *
+        from user
+        where mobile = #{mobile} and deleted = 0
+    </select>
+    <select id="findBut" resultType="com.example.springboot.entity.back.User">
+select * from user where role_id != #{userType} and deleted != 1
+    </select>
+    <select id="findByLikeAddress" resultType="com.example.springboot.entity.back.User">
+        select * from user
+        where address like concat('%',#{address},'%')
+    </select>
+    <select id="findByAddress" resultType="com.example.springboot.entity.back.User">
+        select * from user where address = #{address} and role_id = #{roleId}
+    </select>
+
+</mapper>

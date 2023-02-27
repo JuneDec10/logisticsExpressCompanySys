@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.springboot.Dao.back.MenuDao">
+<resultMap id="menuInfoMap" type="com.example.springboot.entity.back.MenuInfo">
+    <id column="gid" property="id"></id>
+    <result column="gparent_id" property="parentId"></result>
+    <result column="gname" property="name"></result>
+    <result column="grouterName" property="routerName"></result>
+    <result column="giconName" property="iconName"></result>
+    <result column="gsort" property="sort"></result>
+    <result column="gdisabled" property="disabled"></result>
+    <result column="gis_button" property="isButton"></result>
+    <collection property="submenu" ofType="com.example.springboot.entity.back.MenuInfo">
+        <id column="id" property="id"></id>
+        <result column="parent_id" property="parentId"></result>
+        <result column="name" property="name"></result>
+        <result column="routerName" property="routerName"></result>
+        <result column="iconName" property="iconName"></result>
+        <result column="sort" property="sort"></result>
+        <result column="disabled" property="disabled"></result>
+        <result column="is_button" property="isButton"></result>
+    </collection>
+</resultMap>
+
+    <select id="listMenuInfo" resultMap="menuInfoMap">
+
+select tb1.*
+    from role_menu rm,
+         (select m2.*,
+                m1.id gid,
+                 m1.parent_id gparent_id,
+                m1.name gname,
+                m1.routerName grouterName,
+                m1.iconName giconName,
+                m1.sort gsort,
+                m1.disabled gdisabled,
+                m1.is_button gisButton
+         from menu m1 left join menu m2 on m2.parent_id=m1.id
+         where m1.parent_id is null) as tb1
+where (rm.role_id=#{roleId} and rm.menu_id=tb1.id)
+or (rm.role_id=#{roleId} and tb1.id is null and
+    rm.menu_id = tb1.gid)
+
+    </select>
+    <select id="listAll" resultType="com.example.springboot.entity.back.Menu">
+        select * from menu
+    </select>
+    <select id="getAllRoleMenuList" resultMap="menuInfoMap">
+        select m2.*,
+                     m1.id gid,
+                     m1.parent_id gparent_id,
+                     m1.name gname,
+                     m1.routerName grouterName,
+                     m1.iconName giconName,
+                     m1.sort gsort,
+                     m1.disabled gdisabled,
+                     m1.is_button gisButton
+              from menu m1 left join menu m2 on m2.parent_id=m1.id
+              where m1.parent_id is null
+
+    </select>
+</mapper>

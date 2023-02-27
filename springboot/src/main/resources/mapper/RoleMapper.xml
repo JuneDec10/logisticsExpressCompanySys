@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.springboot.Dao.back.RoleDao">
+    <resultMap id="FMenuMap" type="com.example.springboot.entity.back.MenuInfo">
+        <id column="gid" property="id"></id>
+        <result column="gparent_id" property="parentId"></result>
+        <result column="gname" property="name"></result>
+        <result column="grouterName" property="routerName"></result>
+        <result column="giconName" property="iconName"></result>
+        <result column="gsort" property="sort"></result>
+        <result column="gdisabled" property="disabled"></result>
+        <result column="gis_button" property="isButton"></result>
+        <collection property="submenu" ofType="com.example.springboot.entity.back.MenuInfo">
+            <id column="id" property="id"></id>
+            <result column="parent_id" property="parentId"></result>
+            <result column="name" property="name"></result>
+            <result column="routerName" property="routerName"></result>
+            <result column="iconName" property="iconName"></result>
+            <result column="sort" property="sort"></result>
+            <result column="disabled" property="disabled"></result>
+            <result column="is_button" property="isButton"></result>
+        </collection>
+    </resultMap>
+<resultMap id="roleMap" type="com.example.springboot.entity.back.Role">
+    <id column="pid" property="id"></id>
+    <result column="pname" property="name"></result>
+    <result column="premark" property="remark"></result>
+    <result column="pstatus" property="status"></result>
+    <collection property="submenu" ofType="com.example.springboot.entity.back.MenuInfo" resultMap="FMenuMap">
+    </collection>
+</resultMap>
+    <insert id="insertForeach" parameterType="java.util.List" useGeneratedKeys="false">
+        insert into role_menu
+        (role_id,menu_id)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+        (
+         #{item.roleId},
+         #{item.menuId}
+        )
+        </foreach>
+    </insert>
+    <update id="updateStatus" useGeneratedKeys="true" keyProperty="id">
+        update role set
+                        status = 0,
+                        update_time = now()
+where id = #{id}
+    </update>
+    <delete id="updateRoleMenu">
+        delete from role_menu
+        where role_id = #{roleId} and menu_id = #{menuId}
+    </delete>
+    <delete id="deleteForeach">
+        delete from role_menu where
+<foreach collection="list" item="item" separator=" or " index="index">
+
+(role_id = #{item.roleId} and menu_id = #{item.menuId})
+
+</foreach>
+
+    </delete>
+
+
+    <select id="getRoleList" resultMap="roleMap">
+
+        select tb1.*,
+               tb2.id  pid,
+               tb2.menu_id pmenu_id,
+               tb2.name  pname,
+               tb2.remark  premark,
+               tb2.status  pstatus
+        from
+            (select * from
+                role_menu rm right join role r on rm.role_id=r.id
+                where r.status=1
+                ) as tb2
+                left join
+            (select m2.*,
+                    m1.id gid,
+                    m1.parent_id gparent_id,
+                    m1.name gname,
+                    m1.routerName grouterName,
+                    m1.iconName giconName,
+                    m1.sort gsort,
+                    m1.disabled gdisabled,
+                    m1.is_button gisButton
+             from menu m1 left join menu m2 on m2.parent_id=m1.id
+             where m1.parent_id is null) as tb1
+            on
+                    (tb2.menu_id=tb1.id)
+                    or (tb1.id is null and tb2.menu_id = tb1.gid)
+        where tb1.gname is not null or (tb1.gname is null and tb2.menu_id is null)
+
+    </select>
+    <select id="listRoleMenu" resultType="com.example.springboot.entity.back.RoleMenu">
+        select * from role_menu where role_id = #{roleId}
+    </select>
+</mapper>
